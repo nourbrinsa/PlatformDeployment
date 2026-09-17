@@ -1,0 +1,13 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Vagrant
+.vagrant/
+
+# Environment/secrets
+.env
+
+# OS junk
+.DS_Store
