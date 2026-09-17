@@ -74,7 +74,7 @@ vboxmanage --version
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_ORG/projet3-iac.git
+git clone https://github.com/mehdi15649/projet-iac
 cd projet3-iac
 ```
 
