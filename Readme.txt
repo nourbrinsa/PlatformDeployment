@@ -75,7 +75,7 @@ vboxmanage --version
 
 ```bash
 git clone https://github.com/mehdi15649/projet-iac
-cd projet3-iac
+cd projet-iac
 ```
 
 ### 2. Boot the VM
