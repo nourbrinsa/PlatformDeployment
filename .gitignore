@@ -11,3 +11,5 @@ __pycache__/
 
 # OS junk
 .DS_Store
+instance/
+migrations/__pycache__/
