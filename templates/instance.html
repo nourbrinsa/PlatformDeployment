@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ instance.name }}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+            {{ instance.name }}
+        </h1>
+
+        <p>
+            Détails de votre instance
+        </p>
+
+    </div>
+
+
+    {% if instance.status == "running" %}
+
+        <span class="running">
+            ● En fonctionnement
+        </span>
+
+    {% else %}
+
+        <span class="stopped">
+            ● Arrêtée
+        </span>
+
+    {% endif %}
+
+</div>
+
+
+<div class="details-grid">
+
+
+    <div class="detail-card">
+
+        <h2>Informations</h2>
+
+
+        <div class="detail-row">
+
+            <span>
+                Nom
+            </span>
+
+            <strong>
+                {{ instance.name }}
+            </strong>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span>
+                Serveur
+            </span>
+
+            <strong>
+                {{ instance.server }}
+            </strong>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span>
+                Adresse IP
+            </span>
+
+            <strong>
+                {{ instance.ip }}
+            </strong>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span>
+                Port SSH
+            </span>
+
+            <strong>
+                {{ instance.ssh_port }}
+            </strong>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span>
+                État
+            </span>
+
+            <strong>
+                {{ instance.status }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="detail-card">
+
+        <h2>Connexion SSH</h2>
+
+
+        <p>
+            Utilisez la commande suivante :
+        </p>
+
+
+        <div class="ssh-command">
+
+            ssh utilisateur@{{ instance.ip }}
+            -p {{ instance.ssh_port }}
+
+        </div>
+
+
+        <p class="muted">
+
+            La connexion SSH sera réellement disponible
+            lorsque le conteneur Docker sera configuré.
+
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="action-panel">
+
+
+    {% if instance.status == "running" %}
+
+    <a
+        href="{{ url_for(
+            'stop_instance',
+            instance_id=instance.id
+        ) }}"
+        class="button orange-button"
+    >
+        Arrêter
+    </a>
+
+    {% else %}
+
+    <a
+        href="{{ url_for(
+            'start_instance',
+            instance_id=instance.id
+        ) }}"
+        class="button green-button"
+    >
+        Démarrer
+    </a>
+
+    {% endif %}
+
+
+    <a
+        href="{{ url_for(
+            'restart_instance',
+            instance_id=instance.id
+        ) }}"
+        class="secondary-button"
+    >
+        Redémarrer
+    </a>
+
+
+    <a
+        href="{{ url_for(
+            'delete_instance',
+            instance_id=instance.id
+        ) }}"
+        class="danger-button"
+        onclick="return confirm(
+            'Voulez-vous supprimer cette instance ?'
+        );"
+    >
+        Supprimer
+    </a>
+
+</div>
+
+{% endblock %}

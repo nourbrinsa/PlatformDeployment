@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+            Bonjour {{ username }} 👋
+        </h1>
+
+        <p>
+            Gérez vos instances depuis votre dashboard.
+        </p>
+
+    </div>
+
+
+    <a
+        href="{{ url_for('create_instance') }}"
+        class="button"
+    >
+        + Louer une instance
+    </a>
+
+</div>
+
+
+<div class="stats">
+
+    <div class="card">
+
+        <p>
+            Mes instances
+        </p>
+
+        <h2>
+            {{ instances|length }}
+        </h2>
+
+    </div>
+
+
+    <div class="card">
+
+        <p>
+            En fonctionnement
+        </p>
+
+        <h2 class="green">
+            {{ running }}
+        </h2>
+
+    </div>
+
+
+    <div class="card">
+
+        <p>
+            Arrêtées
+        </p>
+
+        <h2 class="orange">
+            {{ stopped }}
+        </h2>
+
+    </div>
+
+</div>
+
+
+<div class="dashboard-title">
+
+    <h2>
+        Mes instances
+    </h2>
+
+</div>
+
+
+<div class="instances">
+
+    {% for instance in instances %}
+
+    <div class="instance">
+
+
+        <div>
+
+            <h3>
+                {{ instance.name }}
+            </h3>
+
+            <p>
+                Serveur :
+                {{ instance.server }}
+            </p>
+
+            <p>
+                IP :
+                {{ instance.ip }}
+            </p>
+
+        </div>
+
+
+        <div>
+
+            {% if instance.status == "running" %}
+
+                <span class="running">
+                    ● En fonctionnement
+                </span>
+
+            {% else %}
+
+                <span class="stopped">
+                    ● Arrêtée
+                </span>
+
+            {% endif %}
+
+        </div>
+
+
+        <div>
+
+            <strong>
+                SSH
+            </strong>
+
+            <p>
+                Port : {{ instance.ssh_port }}
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <a
+                href="{{ url_for(
+                    'instance_details',
+                    instance_id=instance.id
+                ) }}"
+                class="secondary-button"
+            >
+                Détails
+            </a>
+
+        </div>
+
+    </div>
+
+    {% else %}
+
+    <div class="empty">
+
+        <h3>
+            Aucune instance
+        </h3>
+
+        <p>
+            Vous ne possédez actuellement aucune instance.
+        </p>
+
+        <a
+            href="{{ url_for('create_instance') }}"
+            class="button"
+        >
+            Louer une instance
+        </a>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

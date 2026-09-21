@@ -1,0 +1,229 @@
+/* FORMULAIRES */
+
+.form-card {
+    max-width: 650px;
+
+    background: white;
+
+    border: 1px solid #ddd;
+
+    border-radius: 8px;
+
+    padding: 30px;
+}
+
+.form-card form {
+    display: flex;
+
+    flex-direction: column;
+}
+
+.form-card label {
+    margin-top: 15px;
+
+    margin-bottom: 5px;
+}
+
+.form-card input,
+.form-card select {
+
+    padding: 12px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 5px;
+
+    margin-bottom: 15px;
+
+    font-size: 15px;
+}
+
+
+.resource-box {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+}
+
+
+.resource-box div {
+
+    background: #f5f6f8;
+
+    border: 1px solid #ddd;
+
+    border-radius: 6px;
+
+    padding: 15px;
+}
+
+
+.resource-box span {
+
+    display: block;
+
+    color: #777;
+
+    margin-top: 5px;
+}
+
+
+.form-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+
+/* ERREURS */
+
+.error {
+
+    background: #fee2e2;
+
+    border: 1px solid #fecaca;
+
+    color: #b91c1c;
+
+    padding: 12px;
+
+    border-radius: 6px;
+
+    margin-bottom: 20px;
+}
+
+
+/* LIEN CONNEXION */
+
+.login-link {
+
+    text-align: center;
+
+    margin-top: 20px;
+
+    color: #666;
+}
+
+
+.login-link a {
+
+    color: #2563eb;
+
+    text-decoration: none;
+}
+
+
+/* DETAILS */
+
+.details-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 20px;
+}
+
+
+.detail-card {
+
+    background: white;
+
+    border: 1px solid #ddd;
+
+    border-radius: 8px;
+
+    padding: 25px;
+}
+
+
+.detail-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    padding: 15px 0;
+
+    border-bottom: 1px solid #eee;
+}
+
+
+.detail-row span {
+
+    color: #777;
+}
+
+
+.ssh-command {
+
+    background: #111827;
+
+    color: white;
+
+    padding: 15px;
+
+    border-radius: 6px;
+
+    font-family: monospace;
+
+    margin-top: 20px;
+}
+
+
+.muted {
+
+    color: #777;
+}
+
+
+.action-panel {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 25px;
+}
+
+
+.danger-button {
+
+    background: #dc2626;
+
+    color: white;
+
+    padding: 10px 16px;
+
+    border-radius: 6px;
+
+    text-decoration: none;
+}
+
+
+.secondary-button {
+
+    display: inline-block;
+
+    background: #e5e7eb;
+
+    color: #333;
+
+    padding: 10px 16px;
+
+    border-radius: 6px;
+
+    text-decoration: none;
+}
