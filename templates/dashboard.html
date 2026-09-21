@@ -4,182 +4,276 @@
 Dashboard
 {% endblock %}
 
-
 {% block content %}
 
-<div class="page-header">
+<div class="dashboard-container">
 
-    <div>
+    <div class="dashboard-header">
 
-        <h1>
-            Bonjour {{ username }} 👋
-        </h1>
+        <h1>Dashboard</h1>
 
-        <p>
-            Gérez vos instances depuis votre dashboard.
-        </p>
+        <p>Bienvenue {{ username }} !</p>
 
-    </div>
-
-
-    <a
-        href="{{ url_for('create_instance') }}"
-        class="button"
-    >
-        + Louer une instance
-    </a>
-
-</div>
-
-
-<div class="stats">
-
-    <div class="card">
-
-        <p>
-            Mes instances
-        </p>
-
-        <h2>
-            {{ instances|length }}
-        </h2>
+        <a href="{{ url_for('create_instance') }}" class="button">
+            + Louer une instance
+        </a>
 
     </div>
 
 
-    <div class="card">
+    <!-- STATISTIQUES -->
 
-        <p>
-            En fonctionnement
-        </p>
+    <div class="stats">
 
-        <h2 class="green">
-            {{ running }}
-        </h2>
+        <div class="stat-card">
 
-    </div>
+            <span class="stat-title">
+                Instances
+            </span>
 
-
-    <div class="card">
-
-        <p>
-            Arrêtées
-        </p>
-
-        <h2 class="orange">
-            {{ stopped }}
-        </h2>
-
-    </div>
-
-</div>
-
-
-<div class="dashboard-title">
-
-    <h2>
-        Mes instances
-    </h2>
-
-</div>
-
-
-<div class="instances">
-
-    {% for instance in instances %}
-
-    <div class="instance">
-
-
-        <div>
-
-            <h3>
-                {{ instance.name }}
-            </h3>
-
-            <p>
-                Serveur :
-                {{ instance.server }}
-            </p>
-
-            <p>
-                IP :
-                {{ instance.ip }}
-            </p>
+            <span class="stat-number">
+                {{ instances|length }}
+            </span>
 
         </div>
 
 
-        <div>
+        <div class="stat-card"
+             style="border-left: 5px solid #16a34a;">
 
-            {% if instance.status == "running" %}
+            <span class="stat-title">
+                En fonctionnement
+            </span>
 
-                <span class="running">
-                    ● En fonctionnement
+            <span class="stat-number"
+                  style="color: #16a34a;">
+                {{ running }}
+            </span>
+
+        </div>
+
+
+        <div class="stat-card"
+             style="border-left: 5px solid #dc2626;">
+
+            <span class="stat-title">
+                Arrêtées
+            </span>
+
+            <span class="stat-number"
+                  style="color: #dc2626;">
+                {{ stopped }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- INSTANCES -->
+
+    <div class="instances-container">
+
+
+        <!-- INSTANCES EN FONCTIONNEMENT -->
+
+        <div class="instance-section"
+             style="border-top: 5px solid #16a34a;">
+
+            <div class="section-title">
+
+                <h2>
+                    Instances en fonctionnement
+                </h2>
+
+                <span class="section-count"
+                      style="
+                      color: #16a34a;
+                      background-color: #dcfce7;
+                      ">
+                    {{ running }}
                 </span>
 
-            {% else %}
+            </div>
 
-                <span class="stopped">
-                    ● Arrêtée
-                </span>
+
+            {% for instance in instances %}
+
+                {% if instance.status == "running" %}
+
+                <div class="instance-card">
+
+                    <div class="instance-info">
+
+                        <div
+                            class="status-dot"
+                            style="
+                            background-color: #16a34a;
+                            box-shadow: 0 0 0 4px #dcfce7;
+                            "
+                        ></div>
+
+                        <div>
+
+                            <!-- NOM VERT -->
+
+                            <h3 style="color: #16a34a;">
+
+                                {{ instance.name }}
+
+                            </h3>
+
+                            <p>
+                                {{ instance.ip }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- STATUT VERT -->
+
+                    <div
+                        class="instance-status"
+                        style="color: #16a34a;"
+                    >
+
+                        ● En fonctionnement
+
+                    </div>
+
+
+                    <a
+                        href="{{ url_for(
+                            'instance_details',
+                            instance_id=instance.id
+                        ) }}"
+                        class="details-button"
+                    >
+                        Détails
+                    </a>
+
+                </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+
+            {% if running == 0 %}
+
+            <div class="empty-instance">
+
+                Aucune instance en fonctionnement.
+
+            </div>
 
             {% endif %}
 
         </div>
 
 
-        <div>
 
-            <strong>
-                SSH
-            </strong>
+        <!-- INSTANCES ARRETEES -->
 
-            <p>
-                Port : {{ instance.ssh_port }}
-            </p>
+        <div class="instance-section"
+             style="border-top: 5px solid #dc2626;">
 
-        </div>
+            <div class="section-title">
+
+                <h2>
+                    Instances arrêtées
+                </h2>
+
+                <span class="section-count"
+                      style="
+                      color: #dc2626;
+                      background-color: #fee2e2;
+                      ">
+                    {{ stopped }}
+                </span>
+
+            </div>
 
 
-        <div>
+            {% for instance in instances %}
 
-            <a
-                href="{{ url_for(
-                    'instance_details',
-                    instance_id=instance.id
-                ) }}"
-                class="secondary-button"
-            >
-                Détails
-            </a>
+                {% if instance.status == "stopped" %}
+
+                <div class="instance-card">
+
+                    <div class="instance-info">
+
+                        <div
+                            class="status-dot"
+                            style="
+                            background-color: #dc2626;
+                            box-shadow: 0 0 0 4px #fee2e2;
+                            "
+                        ></div>
+
+                        <div>
+
+                            <!-- NOM ROUGE -->
+
+                            <h3 style="color: #dc2626;">
+
+                                {{ instance.name }}
+
+                            </h3>
+
+                            <p>
+                                {{ instance.ip }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- STATUT ROUGE -->
+
+                    <div
+                        class="instance-status"
+                        style="color: #dc2626;"
+                    >
+
+                        ● Arrêtée
+
+                    </div>
+
+
+                    <a
+                        href="{{ url_for(
+                            'instance_details',
+                            instance_id=instance.id
+                        ) }}"
+                        class="details-button"
+                    >
+                        Détails
+                    </a>
+
+                </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+
+            {% if stopped == 0 %}
+
+            <div class="empty-instance">
+
+                Aucune instance arrêtée.
+
+            </div>
+
+            {% endif %}
 
         </div>
 
     </div>
-
-    {% else %}
-
-    <div class="empty">
-
-        <h3>
-            Aucune instance
-        </h3>
-
-        <p>
-            Vous ne possédez actuellement aucune instance.
-        </p>
-
-        <a
-            href="{{ url_for('create_instance') }}"
-            class="button"
-        >
-            Louer une instance
-        </a>
-
-    </div>
-
-    {% endfor %}
 
 </div>
 
