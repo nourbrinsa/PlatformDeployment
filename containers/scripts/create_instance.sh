@@ -40,6 +40,10 @@ EXPIRES_AT="$(date -u -d "@${EXPIRES_EPOCH}" +%Y-%m-%dT%H:%M:%SZ)"
 docker run -d --name "$NAME" \
   -e USER_PASSWORD="$PASSWORD" \
   -p 22 \
+  --memory 256m \
+  --cpus 0.5 \
+  --pids-limit 100 \
+  --restart unless-stopped \
   --label app=projet-iac \
   --label rental.owner="$USER_ID" \
   --label rental.distribution="$DISTRIBUTION" \
