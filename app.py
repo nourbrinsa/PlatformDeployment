@@ -4,6 +4,9 @@ from flask_migrate import Migrate
 from config import Config
 from models import db
 from models.user import User
+from models.distribution import Distribution
+from models.worker import Worker
+from models.instance import Instance
 from models.rental import Rental
 
 app = Flask(__name__)
