@@ -46,8 +46,8 @@
         state: started
         enabled: true
 
-    - name: Add current user to docker group
+    - name: Add vagrant user to docker group
       user:
-        name: "{{ ansible_user_id }}"
+        name: vagrant
         groups: docker
         append: true
