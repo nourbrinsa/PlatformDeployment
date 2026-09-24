@@ -1,0 +1,19 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/jammy64"
+  config.vm.hostname = "worker1"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = 2048
+    vb.cpus = 2
+  end
+
+  # Copie le dossier containers/ du dépôt dans la VM, à /vagrant/containers
+  config.vm.synced_folder "../../", "/vagrant_repo"
+
+  # Exécute Ansible DANS la VM elle-même, pas depuis Windows/WSL
+  config.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "/vagrant_repo/containers/ansible/site.yml"
+    ansible.inventory_path = "/vagrant_repo/containers/ansible/hosts_vagrant.ini"
+    ansible.limit = "all"
+  end
+end
