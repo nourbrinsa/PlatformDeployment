@@ -19,7 +19,7 @@ def run_script(script_name, *args):
     script_path = SCRIPTS_DIR / script_name
     result = subprocess.run(
         [str(script_path), *args],
-        capture_output=True, text=True, timeout=120
+        capture_output=True, text=True, timeout=300
     )
     try:
         data = json.loads(result.stdout)

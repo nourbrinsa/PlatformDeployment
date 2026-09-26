@@ -32,3 +32,34 @@
         name: flask
         virtualenv: "{{ project_dir }}/containers/agent/venv"
         virtualenv_command: python3 -m venv
+
+    - name: Pre-build ubuntu SSH image
+      command: >
+        docker build --build-arg BASE_IMAGE=ubuntu:24.04
+        -t ssh-ubuntu {{ project_dir }}/containers/docker
+      changed_when: true
+      environment:
+        DOCKER_BUILDKIT: "1"
+
+    - name: Pre-build debian SSH image
+      command: >
+        docker build --build-arg BASE_IMAGE=debian:12
+        -t ssh-debian {{ project_dir }}/containers/docker
+      changed_when: true
+      environment:
+        DOCKER_BUILDKIT: "1"
+
+    - name: Install worker agent systemd service
+      template:
+        src: worker-agent.service.j2
+        dest: /etc/systemd/system/worker-agent.service
+        mode: "0644"
+      notify: Reload and restart worker agent
+
+  handlers:
+    - name: Reload and restart worker agent
+      systemd:
+        daemon_reload: true
+        name: worker-agent
+        state: restarted
+        enabled: true
