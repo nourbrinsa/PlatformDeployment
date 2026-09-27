@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Instance créée{% endblock %}
+{% block content %}
+<div style="max-width:600px;margin:2rem auto">
+  <div class="card">
+    <h2 style="margin-bottom:1rem">✅ Instance créée</h2>
+    <p style="margin-bottom:1rem">Votre instance est prête. Connectez-vous avec SSH :</p>
+    <code>{{ ssh_command }}</code>
+    <p style="margin-top:1rem"><strong>Mot de passe :</strong> <code>{{ password }}</code></p>
+    <p style="margin-top:.5rem;color:#6c757d;font-size:.9rem">Expire le : {{ expires_at }}</p>
+    <a href="{{ url_for('dashboard.index') }}" class="btn btn-primary" style="margin-top:1.2rem">Retour au dashboard</a>
+  </div>
+</div>
+{% endblock %}

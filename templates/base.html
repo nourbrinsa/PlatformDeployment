@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}IaC Rental{% endblock %}</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f4f6f9; color: #1a1a2e; min-height: 100vh; }
+    nav { background: #1a1a2e; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    nav a { color: #a8b2d8; text-decoration: none; margin-left: 1rem; }
+    nav a:hover { color: white; }
+    .container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+    .card { background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    .btn { display: inline-block; padding: .5rem 1.2rem; border-radius: 6px; border: none; cursor: pointer; font-size: .95rem; text-decoration: none; }
+    .btn-primary { background: #4361ee; color: white; }
+    .btn-primary:hover { background: #3a52d4; }
+    .btn-danger  { background: #e63946; color: white; }
+    .btn-danger:hover  { background: #c1121f; }
+    .flash { padding: .75rem 1rem; border-radius: 6px; margin-bottom: 1rem; background: #fff3cd; border: 1px solid #ffc107; color: #856404; }
+    .flash.error { background: #f8d7da; border-color: #f5c2c7; color: #842029; }
+    form input, form select { width: 100%; padding: .5rem .75rem; border: 1px solid #ccc; border-radius: 6px; margin-bottom: .75rem; font-size: .95rem; }
+    form label { display: block; margin-bottom: .25rem; font-weight: 500; font-size: .9rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: .6rem .75rem; text-align: left; border-bottom: 1px solid #e9ecef; font-size: .9rem; }
+    th { background: #f8f9fa; font-weight: 600; }
+    .badge { display: inline-block; padding: .2rem .55rem; border-radius: 12px; font-size: .78rem; font-weight: 600; }
+    .badge-active  { background: #d1fae5; color: #065f46; }
+    .badge-stopped { background: #fee2e2; color: #991b1b; }
+    .badge-expired { background: #e5e7eb; color: #374151; }
+    code { background: #1a1a2e; color: #a8e6cf; padding: .4rem .8rem; border-radius: 4px; font-size: .9rem; display: block; margin: .5rem 0; word-break: break-all; }
+  </style>
+</head>
+<body>
+<nav>
+  <strong>🖥️ IaC Rental</strong>
+  <div>
+    {% if current_user.is_authenticated %}
+      <span style="color:#a8b2d8">{{ current_user.username }}</span>
+      <form method="post" action="{{ url_for('auth.logout') }}" style="display:inline">
+        <button class="btn" style="color:#a8b2d8;background:none;border:1px solid #a8b2d8;padding:.3rem .8rem;margin-left:1rem">Déconnexion</button>
+      </form>
+    {% else %}
+      <a href="{{ url_for('auth.login') }}">Connexion</a>
+      <a href="{{ url_for('auth.register') }}">Inscription</a>
+    {% endif %}
+  </div>
+</nav>
+<div class="container">
+  {% for msg in get_flashed_messages() %}
+    <div class="flash">{{ msg }}</div>
+  {% endfor %}
+  {% block content %}{% endblock %}
+</div>
+</body>
+</html>

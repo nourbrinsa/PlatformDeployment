@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Connexion{% endblock %}
+{% block content %}
+<div style="max-width:420px;margin:3rem auto">
+  <div class="card">
+    <h2 style="margin-bottom:1.2rem">Connexion</h2>
+    <form method="post">
+      <label>Email</label>
+      <input type="email" name="email" required autofocus>
+      <label>Mot de passe</label>
+      <input type="password" name="password" required>
+      <button class="btn btn-primary" style="width:100%">Se connecter</button>
+    </form>
+    <p style="margin-top:1rem;font-size:.9rem">Pas de compte ? <a href="{{ url_for('auth.register') }}">S'inscrire</a></p>
+  </div>
+</div>
+{% endblock %}

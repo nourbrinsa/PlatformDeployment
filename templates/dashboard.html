@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1 style="margin-bottom:1.5rem">Dashboard</h1>
+
+<!-- Rent form -->
+<div class="card">
+  <h3 style="margin-bottom:1rem">Louer une instance</h3>
+  <form method="post" action="{{ url_for('rental.rent') }}" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end">
+    <div style="flex:1;min-width:160px">
+      <label>Distribution</label>
+      <select name="distribution" required>
+        {% for d in distributions %}
+          <option value="{{ d.name }}">{{ d.name }} {{ d.version }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div style="flex:1;min-width:140px">
+      <label>Durée (minutes)</label>
+      <input type="number" name="duration_minutes" value="60" min="1" max="1440" required>
+    </div>
+    <div>
+      <button class="btn btn-primary">Louer</button>
+    </div>
+  </form>
+</div>
+
+<!-- Active rentals -->
+<div class="card">
+  <h3 style="margin-bottom:1rem">Mes instances</h3>
+  {% if rentals %}
+  <table>
+    <thead>
+      <tr>
+        <th>Distribution</th>
+        <th>Port SSH</th>
+        <th>Commande SSH</th>
+        <th>Expire le</th>
+        <th>Statut</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for rental in rentals %}
+      <tr>
+        <td>{{ rental.instance.distribution.name }}</td>
+        <td>{{ rental.instance.ssh_port }}</td>
+        <td><code>ssh student@{{ rental.instance.worker.ip }} -p {{ rental.instance.ssh_port }}</code></td>
+        <td>{{ rental.end_time.strftime('%d/%m/%Y %H:%M') }}</td>
+        <td>
+          <span class="badge badge-{{ rental.status }}">{{ rental.status }}</span>
+        </td>
+        <td>
+          {% if rental.status == "active" %}
+          <form method="post" action="{{ url_for('rental.stop_instance', instance_id=rental.instance.id) }}" style="display:inline">
+            <button class="btn btn-danger" style="padding:.3rem .7rem;font-size:.82rem">Arrêter</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p style="color:#6c757d">Aucune instance pour le moment. Louez-en une ci-dessus.</p>
+  {% endif %}
+</div>
+{% endblock %}
