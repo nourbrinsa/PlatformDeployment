@@ -9,6 +9,8 @@ from pathlib import Path
 
 from flask import Flask, jsonify, request
 
+from register_client import start_background_registration
+
 app = Flask(__name__)
 
 SCRIPTS_DIR = Path(__file__).resolve().parent.parent / "scripts"
@@ -61,4 +63,5 @@ def get_status(instance_id):
 if __name__ == "__main__":
     # host="0.0.0.0" : accessible depuis d'autres machines du réseau (le Controller),
     # pas seulement depuis localhost. Indispensable pour une vraie architecture distribuée.
+    start_background_registration()
     app.run(host="0.0.0.0", port=5001)
