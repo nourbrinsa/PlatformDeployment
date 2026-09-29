@@ -76,6 +76,7 @@ Vagrant.configure("2") do |config|
   # SHELL
 
     config.vm.hostname = "projet3-dev"
+    config.vm.network "private_network", ip: "192.168.56.10"
 
     config.vm.provider "virtualbox" do |vb|
       vb.memory = "4096"

@@ -18,7 +18,7 @@ def register_worker():
     worker.ip             = body["ip"]
     worker.cpu            = body.get("cpu")
     worker.memory         = body.get("memory")
-    worker.status         = "available"
+    worker.status         = "AVAILABLE"
     worker.last_heartbeat = datetime.now(timezone.utc)
     db.session.commit()
     return jsonify({"status": "registered", "worker_id": worker.id}), 201
@@ -33,7 +33,7 @@ def heartbeat():
     if worker is None:
         return jsonify({"status": "error", "message": "unknown worker"}), 404
     worker.last_heartbeat = datetime.now(timezone.utc)
-    worker.status         = "available"
+    worker.status         = "AVAILABLE"
     db.session.commit()
     return jsonify({"status": "ok"}), 200
 

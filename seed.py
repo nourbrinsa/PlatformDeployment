@@ -21,8 +21,8 @@ with app.app_context():
     # Workers (Nour's machines — for dev/test)
     if not Worker.query.first():
         db.session.add_all([
-            Worker(hostname="worker1", ip="192.168.56.11", status="available"),
-            Worker(hostname="worker2", ip="192.168.56.12", status="available"),
+            Worker(hostname="worker1", ip="192.168.56.11", status="AVAILABLE"),
+            Worker(hostname="worker2", ip="192.168.56.12", status="AVAILABLE"),
         ])
         db.session.commit()
         print("Workers seeded.")
