@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+
+    <div class="dashboard-header">
+
+        <h1>Dashboard</h1>
+
+        <p>Bienvenue {{ username }} !</p>
+
+        <a href="{{ url_for('create_instance') }}" class="button">
+            + Louer une instance
+        </a>
+
+    </div>
+
+
+    <!-- STATISTIQUES -->
+
+    <div class="stats">
+
+        <div class="stat-card">
+
+            <span class="stat-title">
+                Instances
+            </span>
+
+            <span class="stat-number">
+                {{ instances|length }}
+            </span>
+
+        </div>
+
+
+        <div class="stat-card"
+             style="border-left: 5px solid #16a34a;">
+
+            <span class="stat-title">
+                En fonctionnement
+            </span>
+
+            <span class="stat-number"
+                  style="color: #16a34a;">
+                {{ running }}
+            </span>
+
+        </div>
+
+
+        <div class="stat-card"
+             style="border-left: 5px solid #dc2626;">
+
+            <span class="stat-title">
+                Arrêtées
+            </span>
+
+            <span class="stat-number"
+                  style="color: #dc2626;">
+                {{ stopped }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- INSTANCES -->
+
+    <div class="instances-container">
+
+
+        <!-- INSTANCES EN FONCTIONNEMENT -->
+
+        <div class="instance-section"
+             style="border-top: 5px solid #16a34a;">
+
+            <div class="section-title">
+
+                <h2>
+                    Instances en fonctionnement
+                </h2>
+
+                <span class="section-count"
+                      style="
+                      color: #16a34a;
+                      background-color: #dcfce7;
+                      ">
+                    {{ running }}
+                </span>
+
+            </div>
+
+
+            {% for instance in instances %}
+
+                {% if instance.status == "running" %}
+
+                <div class="instance-card">
+
+                    <div class="instance-info">
+
+                        <div
+                            class="status-dot"
+                            style="
+                            background-color: #16a34a;
+                            box-shadow: 0 0 0 4px #dcfce7;
+                            "
+                        ></div>
+
+                        <div>
+
+                            <!-- NOM VERT -->
+
+                            <h3 style="color: #16a34a;">
+
+                                {{ instance.name }}
+
+                            </h3>
+
+                            <p>
+                                {{ instance.ip }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- STATUT VERT -->
+
+                    <div
+                        class="instance-status"
+                        style="color: #16a34a;"
+                    >
+
+                        ● En fonctionnement
+
+                    </div>
+
+
+                    <a
+                        href="{{ url_for(
+                            'instance_details',
+                            instance_id=instance.id
+                        ) }}"
+                        class="details-button"
+                    >
+                        Détails
+                    </a>
+
+                </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+
+            {% if running == 0 %}
+
+            <div class="empty-instance">
+
+                Aucune instance en fonctionnement.
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- INSTANCES ARRETEES -->
+
+        <div class="instance-section"
+             style="border-top: 5px solid #dc2626;">
+
+            <div class="section-title">
+
+                <h2>
+                    Instances arrêtées
+                </h2>
+
+                <span class="section-count"
+                      style="
+                      color: #dc2626;
+                      background-color: #fee2e2;
+                      ">
+                    {{ stopped }}
+                </span>
+
+            </div>
+
+
+            {% for instance in instances %}
+
+                {% if instance.status == "stopped" %}
+
+                <div class="instance-card">
+
+                    <div class="instance-info">
+
+                        <div
+                            class="status-dot"
+                            style="
+                            background-color: #dc2626;
+                            box-shadow: 0 0 0 4px #fee2e2;
+                            "
+                        ></div>
+
+                        <div>
+
+                            <!-- NOM ROUGE -->
+
+                            <h3 style="color: #dc2626;">
+
+                                {{ instance.name }}
+
+                            </h3>
+
+                            <p>
+                                {{ instance.ip }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- STATUT ROUGE -->
+
+                    <div
+                        class="instance-status"
+                        style="color: #dc2626;"
+                    >
+
+                        ● Arrêtée
+
+                    </div>
+
+
+                    <a
+                        href="{{ url_for(
+                            'instance_details',
+                            instance_id=instance.id
+                        ) }}"
+                        class="details-button"
+                    >
+                        Détails
+                    </a>
+
+                </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+
+            {% if stopped == 0 %}
+
+            <div class="empty-instance">
+
+                Aucune instance arrêtée.
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

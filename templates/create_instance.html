@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}
+Nouvelle instance - IaC Rental
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>Nouvelle instance</h1>
+
+        <p>
+            Configurez votre nouvelle instance.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="form-card">
+
+    <form method="POST">
+
+        <label for="name">
+            Nom de l'instance
+        </label>
+
+        <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="ex: serveur-web"
+            required
+        >
+
+
+        <label>
+            Image
+        </label>
+
+        <select>
+
+            <option>
+                Ubuntu + SSH
+            </option>
+
+        </select>
+
+
+        <label>
+            Ressources
+        </label>
+
+        <div class="resource-box">
+
+            <div>
+                <strong>CPU</strong>
+                <span>1 vCPU</span>
+            </div>
+
+            <div>
+                <strong>RAM</strong>
+                <span>512 MB</span>
+            </div>
+
+            <div>
+                <strong>Stockage</strong>
+                <span>5 GB</span>
+            </div>
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <a href="{{ url_for('dashboard') }}"
+               class="secondary-button">
+
+                Annuler
+
+            </a>
+
+            <button type="submit"
+                    class="primary-button">
+
+                Créer l'instance
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
