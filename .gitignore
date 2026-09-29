@@ -11,3 +11,4 @@ __pycache__/
 
 # OS junk
 .DS_Store
+web_test_venv/
