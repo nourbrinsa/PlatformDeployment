@@ -12,3 +12,7 @@ __pycache__/
 # OS junk
 .DS_Store
 web_test_venv/
+
+instance/
+*.db
+containers/cleanup.log
