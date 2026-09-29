@@ -8,9 +8,9 @@ class Worker(db.Model):
     hostname       = db.Column(db.String(100), unique=True, nullable=False)
     ip             = db.Column(db.String(45), nullable=False)
     status         = db.Column(db.String(20), default="AVAILABLE")
-    # status values: "AVAILABLE" | "BUSY" | "OFFLINE"
-    cpu            = db.Column(db.Float, nullable=True)     # e.g. 4.0 (cores)
-    memory         = db.Column(db.Float, nullable=True)     # e.g. 8.0 (GB)
+    # status values: AVAILABLE | BUSY | OFFLINE
+    cpu            = db.Column(db.Float, nullable=True)
+    memory         = db.Column(db.Float, nullable=True)
     last_heartbeat = db.Column(db.DateTime, nullable=True)
 
     instances = db.relationship("Instance", backref="worker", lazy=True)
