@@ -29,7 +29,9 @@
 
     - name: Install Flask in a virtual environment
       pip:
-        name: flask
+        name: 
+          - flask
+          - requests
         virtualenv: "{{ project_dir }}/containers/agent/venv"
         virtualenv_command: python3 -m venv
 
