@@ -1,16 +1,9 @@
 from models.worker import Worker
-from models import db
 
-
-def pick_available_worker():
-    return Worker.query.filter_by(status="AVAILABLE").first()
-
-
-def mark_worker_busy(worker):
-    worker.status = "BUSY"
-    db.session.commit()
-
-
-def mark_worker_available(worker):
-    worker.status = "AVAILABLE"
-    db.session.commit()
+def pick_candidate_workers():
+    """Renvoie tous les Workers, dans l'ordre. Le vrai test de
+    disponibilité se fait en direct (check_health) au moment de
+    l'appel, pas via ce champ status en base (pas de heartbeat fiable
+    pour l'instant). Permet de redonner sa chance à un Worker revenu
+    en ligne, sans dépendre d'un flag qui ne se met jamais à jour."""
+    return Worker.query.order_by(Worker.id).all()
