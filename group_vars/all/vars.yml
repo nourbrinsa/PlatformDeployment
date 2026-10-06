@@ -1,0 +1,20 @@
+---
+# Variables non secrètes
+project_dir: /opt/projet-iac
+controller_url: "http://192.168.56.10:5000"   # adapter à l'IP réelle du Controller
+
+# Utilisateur système dédié qui exécute le Worker Agent (pas root, pas vagrant)
+worker_agent_user: worker-agent
+worker_agent_home: /var/lib/worker-agent
+
+# Utilisateurs humains autorisés à utiliser docker (en dev seulement)
+docker_users:
+  - vagrant
+
+# Images SSH préconstruites sur chaque worker
+ssh_images:
+  - { name: ubuntu, base: "ubuntu:24.04" }
+  - { name: debian, base: "debian:12" }
+
+# Le secret vient du coffre (group_vars/all/vault.yml, chiffré)
+worker_token: "{{ vault_worker_token }}"
