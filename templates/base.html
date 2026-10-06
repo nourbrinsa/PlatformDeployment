@@ -38,6 +38,7 @@
     {% if current_user.is_authenticated %}
       <span style="color:#a8b2d8">{{ current_user.username }}</span>
       <form method="post" action="{{ url_for('auth.logout') }}" style="display:inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <button class="btn" style="color:#a8b2d8;background:none;border:1px solid #a8b2d8;padding:.3rem .8rem;margin-left:1rem">Déconnexion</button>
       </form>
     {% else %}
