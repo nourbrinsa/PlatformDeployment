@@ -11,14 +11,14 @@ echo ">>> Installing PostgreSQL"
 apt-get install -y postgresql postgresql-contrib
 
 echo ">>> Setting up Python virtual environment"
-echo ">>> Installing python-dotenv flask-migrate"
 sudo -u vagrant bash -c "
   cd /vagrant &&
   python3 -m venv venv &&
   source venv/bin/activate &&
   pip install --upgrade pip &&
-  pip install flask flask-sqlalchemy flask-login psyco pg2-binary paramiko apscheduler &&
-  pip install python-dotenv flask-migrate
+  pip install -r requirements.txt &&
+  pip install apscheduler
 "
 
 echo ">>> Provisioning complete!"
+echo ">>> N'oubliez pas : cp .env.example .env (puis SECRET_KEY et WORKER_TOKEN)"
