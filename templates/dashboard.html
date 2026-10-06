@@ -7,6 +7,7 @@
 <div class="card">
   <h3 style="margin-bottom:1rem">Louer une instance</h3>
   <form method="post" action="{{ url_for('rental.rent') }}" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div style="flex:1;min-width:160px">
       <label>Distribution</label>
       <select name="distribution" required>
