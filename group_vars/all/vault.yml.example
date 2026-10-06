@@ -1,0 +1,6 @@
+---
+# Copier ce fichier en vault.yml, mettre une vraie valeur, puis le chiffrer :
+#   cp vault.yml.example vault.yml
+#   ansible-vault encrypt vault.yml
+# Générer le jeton : python3 -c "import secrets; print(secrets.token_hex(32))"
+vault_worker_token: "REMPLACER-PAR-LE-MEME-JETON-QUE-WORKER_TOKEN-DU-CONTROLLER"
