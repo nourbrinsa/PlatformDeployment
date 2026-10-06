@@ -5,6 +5,7 @@
   <div class="card">
     <h2 style="margin-bottom:1.2rem">Créer un compte</h2>
     <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <label>Nom d'utilisateur</label>
       <input type="text" name="username" required autofocus>
       <label>Email</label>
