@@ -64,4 +64,5 @@ if __name__ == "__main__":
     # host="0.0.0.0" : accessible depuis d'autres machines du réseau (le Controller),
     # pas seulement depuis localhost. Indispensable pour une vraie architecture distribuée.
     start_background_registration()
-    app.run(host="0.0.0.0", port=5001)
+    # worker_agent.py, dernière ligne
+    app.run(host="0.0.0.0", port=5001, threaded=True)
