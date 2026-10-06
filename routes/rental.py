@@ -1,4 +1,4 @@
-from flask import Blueprint, request, flash, redirect, url_for, render_template, current_app
+from flask import Blueprint, request, flash, redirect, url_for, render_template, current_app, make_response
 from flask_login import login_required, current_user
 from datetime import datetime, timezone
 from models import db
@@ -25,8 +25,9 @@ def rent():
     distribution_name = request.form.get("distribution", "").strip()
     try:
         duration_minutes = int(request.form.get("duration_minutes", "60"))
-        assert 1 <= duration_minutes <= 1440
-    except (ValueError, AssertionError):
+    except ValueError:
+        duration_minutes = 0
+    if not 1 <= duration_minutes <= 1440:   # pas d'assert : désactivé avec python -O
         flash("Durée invalide (entre 1 et 1440 minutes).")
         return redirect(url_for("dashboard.index"))
 
@@ -60,7 +61,9 @@ def rent():
     db.session.add(rental)
     db.session.commit()
 
-    return render_template("rental_created.html", ssh_command=f"ssh {data['ssh_user']}@{data['host']} -p {data['ssh_port']}", password=data["ssh_password"], expires_at=data["expires_at"])
+    resp = make_response(render_template("rental_created.html", ssh_command=f"ssh {data['ssh_user']}@{data['host']} -p {data['ssh_port']}", password=data["ssh_password"], expires_at=data["expires_at"]))
+    resp.headers["Cache-Control"] = "no-store"   # la page contient un mot de passe
+    return resp
 
 
 @bp.route("/instances/<int:instance_id>/stop", methods=["POST"])
