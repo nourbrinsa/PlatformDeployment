@@ -1,0 +1,29 @@
+WORKERS = {
+  "worker1" => "192.168.56.11",
+  "worker2" => "192.168.56.12"
+}
+
+Vagrant.configure("2") do |config|
+  WORKERS.each do |name, ip|
+    config.vm.define name do |worker|
+      worker.vm.box = "ubuntu/jammy64"
+      worker.vm.hostname = name
+
+      worker.vm.network "private_network", ip: ip
+
+      worker.vm.provider "virtualbox" do |vb|
+        vb.memory = 2048
+        vb.cpus = 2
+        vb.name = name
+      end
+
+      worker.vm.synced_folder "../../", "/vagrant_repo"
+
+      worker.vm.provision "ansible_local" do |ansible|
+        ansible.playbook = "/vagrant_repo/containers/ansible/site.yml"
+        ansible.inventory_path = "/vagrant_repo/containers/ansible/hosts_vagrant.ini"
+        ansible.limit = "all"
+      end
+    end
+  end
+end

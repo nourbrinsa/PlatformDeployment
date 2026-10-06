@@ -74,8 +74,8 @@ vboxmanage --version
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_ORG/projet3-iac.git
-cd projet3-iac
+git clone https://github.com/mehdi15649/projet-iac
+cd projet-iac
 ```
 
 ### 2. Boot the VM
@@ -130,6 +130,7 @@ Edit code in your normal editor on your **host machine** — the `/vagrant` fold
 ## Stopping and cleaning up
 
 ```bash
+exit                
 vagrant halt        # stop the VM (keeps everything, like shutting down)
 vagrant reload      # restart the VM (use after Vagrantfile changes)
 vagrant provision   # re-run bootstrap.sh (use after bootstrap.sh changes)

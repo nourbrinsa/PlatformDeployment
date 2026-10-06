@@ -1,0 +1,15 @@
+[Unit]
+Description=Worker Agent - Container rental HTTP API
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+User=vagrant
+WorkingDirectory={{ project_dir }}/containers/agent
+ExecStart={{ project_dir }}/containers/agent/venv/bin/python3 {{ project_dir }}/containers/agent/worker_agent.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
