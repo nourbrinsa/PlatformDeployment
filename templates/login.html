@@ -5,6 +5,7 @@
   <div class="card">
     <h2 style="margin-bottom:1.2rem">Connexion</h2>
     <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <label>Email</label>
       <input type="email" name="email" required autofocus>
       <label>Mot de passe</label>
