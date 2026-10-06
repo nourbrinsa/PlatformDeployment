@@ -1,67 +1,124 @@
 ---
-- name: Deploy worker agent code
+- name: Deploy worker agent
   hosts: workers
   become: true
 
-  vars:
-    project_dir: /opt/projet-iac
-
   tasks:
+    # --- Moindre privilège : utilisateur système dédié ---
+    - name: Create dedicated system user for the worker agent
+      ansible.builtin.user:
+        name: "{{ worker_agent_user }}"
+        system: true
+        shell: /usr/sbin/nologin
+        home: "{{ worker_agent_home }}"
+        create_home: true
+        groups: docker
+        append: true
+
     - name: Create project directory
-      file:
+      ansible.builtin.file:
         path: "{{ project_dir }}"
         state: directory
+        owner: root
+        group: root
         mode: "0755"
 
+    # Le code appartient à root : l'agent peut le lire mais pas le modifier
     - name: Copy containers folder to target host
-      copy:
+      ansible.builtin.copy:
         src: "{{ playbook_dir }}/../"
         dest: "{{ project_dir }}/containers"
+        owner: root
+        group: root
         mode: preserve
+      notify: Restart worker agent
 
     - name: Install Python and pip
-      apt:
+      ansible.builtin.apt:
         name:
           - python3
           - python3-venv
           - python3-pip
         state: present
 
-    - name: Install Flask in a virtual environment
-      pip:
-        name: 
+    - name: Install Flask and requests in a virtual environment
+      ansible.builtin.pip:
+        name:
           - flask
           - requests
         virtualenv: "{{ project_dir }}/containers/agent/venv"
         virtualenv_command: python3 -m venv
 
-    - name: Pre-build ubuntu SSH image
-      command: >
-        docker build --build-arg BASE_IMAGE=ubuntu:24.04
-        -t ssh-ubuntu {{ project_dir }}/containers/docker
-      changed_when: true
-      environment:
-        DOCKER_BUILDKIT: "1"
+    # --- Secrets : jamais en clair dans le dépôt, fichier lisible par root seulement ---
+    - name: Deploy worker agent environment file (secrets from Vault)
+      ansible.builtin.template:
+        src: worker-agent.env.j2
+        dest: /etc/worker-agent.env
+        owner: root
+        group: root
+        mode: "0600"
+      no_log: true
+      notify: Restart worker agent
 
-    - name: Pre-build debian SSH image
-      command: >
-        docker build --build-arg BASE_IMAGE=debian:12
-        -t ssh-debian {{ project_dir }}/containers/docker
+    # --- Images SSH : construites seulement si absentes (idempotent) ---
+    - name: Check whether SSH images already exist
+      ansible.builtin.command: "docker image inspect ssh-{{ item.name }}"
+      loop: "{{ ssh_images }}"
+      register: image_check
+      changed_when: false
+      failed_when: false
+
+    - name: Build missing SSH images
+      ansible.builtin.command: >-
+        docker build --build-arg BASE_IMAGE={{ item.item.base }}
+        -t ssh-{{ item.item.name }} {{ project_dir }}/containers/docker
+      loop: "{{ image_check.results }}"
+      when: item.rc != 0
       changed_when: true
       environment:
         DOCKER_BUILDKIT: "1"
 
     - name: Install worker agent systemd service
-      template:
+      ansible.builtin.template:
         src: worker-agent.service.j2
         dest: /etc/systemd/system/worker-agent.service
+        owner: root
+        group: root
         mode: "0644"
-      notify: Reload and restart worker agent
+      notify: Restart worker agent
+
+    # --- Nettoyage des instances expirées (F12) ---
+    - name: Schedule cleanup of expired instances
+      ansible.builtin.cron:
+        name: projet-iac cleanup
+        user: root
+        job: "{{ project_dir }}/containers/scripts/cleanup.sh >> /var/log/projet-iac-cleanup.log 2>&1"
+
+    # --- Vérification des permissions ---
+    - name: Stat the secrets file
+      ansible.builtin.stat:
+        path: /etc/worker-agent.env
+      register: env_file
+
+    - name: Assert secrets file is root-only
+      ansible.builtin.assert:
+        that:
+          - env_file.stat.exists
+          - env_file.stat.pw_name == "root"
+          - env_file.stat.mode == "0600"
+        fail_msg: "/etc/worker-agent.env doit être root:root 0600"
+
+    - name: Make sure the agent service is enabled and started
+      ansible.builtin.systemd:
+        name: worker-agent
+        daemon_reload: true
+        enabled: true
+        state: started
 
   handlers:
-    - name: Reload and restart worker agent
-      systemd:
-        daemon_reload: true
+    - name: Restart worker agent
+      ansible.builtin.systemd:
         name: worker-agent
+        daemon_reload: true
         state: restarted
         enabled: true
