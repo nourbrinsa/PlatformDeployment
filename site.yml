@@ -1,0 +1,6 @@
+---
+- name: Install Docker on workers
+  ansible.builtin.import_playbook: docker.yml
+
+- name: Deploy the worker agent
+  ansible.builtin.import_playbook: worker.yml
