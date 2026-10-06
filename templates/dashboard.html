@@ -54,6 +54,7 @@
         <td>
           {% if rental.status == "active" %}
           <form method="post" action="{{ url_for('rental.stop_instance', instance_id=rental.instance.id) }}" style="display:inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button class="btn btn-danger" style="padding:.3rem .7rem;font-size:.82rem">Arrêter</button>
           </form>
           {% endif %}
