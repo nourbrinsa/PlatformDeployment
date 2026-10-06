@@ -11,7 +11,7 @@ with app.app_context():
     if not Distribution.query.first():
         db.session.add_all([
             Distribution(name="ubuntu", docker_image="ubuntu:24.04", version="24.04", status="active"),
-            Distribution(name="debian", docker_image="debian:13",    version="13",    status="active"),
+            Distribution(name="debian", docker_image="debian:12",    version="13",    status="active"),
         ])
         db.session.commit()
         print("Distributions seeded.")
