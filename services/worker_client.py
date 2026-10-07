@@ -41,7 +41,7 @@ def delete_instance(worker_ip, instance_id):
 def check_health(worker_ip):
     url = f"http://{worker_ip}:{WORKER_AGENT_PORT}/health"
     try:
-        response = requests.get(url, timeout=5)
+        response = requests.get(url, timeout=TIMEOUT_SECONDS)
         return response.status_code == 200
     except requests.exceptions.RequestException:
         return False

@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from config import Config
 from models import db
 from models.user import User
+from zoneinfo import ZoneInfo
 
 
 def create_app():
@@ -33,6 +34,8 @@ def create_app():
     from routes.dashboard import bp as dashboard_bp
     from routes.rental import bp as rental_bp
     from routes.workers import bp as workers_bp
+    from datetime import timezone
+
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
@@ -47,6 +50,14 @@ def create_app():
     def health():
         return {"status": "ok"}, 200
 
+    @app.template_filter("local_dt")
+    def local_dt_filter(dt):
+        if dt is None:
+            return ""
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(ZoneInfo("Europe/Paris")).strftime("%d/%m/%Y %H:%M")
+    
     return app
 
 

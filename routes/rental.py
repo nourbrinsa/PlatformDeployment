@@ -1,13 +1,17 @@
 from flask import Blueprint, request, flash, redirect, url_for, render_template, current_app
 from flask_login import login_required, current_user
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from models import db
 from models.instance import Instance
 from models.rental import Rental
 from models.distribution import Distribution
+from models.worker import Worker
 from services.resource_manager import pick_candidate_workers
 
 bp = Blueprint("rental", __name__)
+
+LOCAL_TZ = ZoneInfo("Europe/Paris")
 
 
 def get_worker_client():
@@ -37,6 +41,23 @@ def reconcile_worker_instances(worker, wc):
             if inst.rental:
                 inst.rental.status = "expired"
     db.session.commit()
+
+
+def reconcile_all_workers():
+    """
+    Passe en revue TOUS les workers connus (pas seulement celui visé par
+    une location en cours) et réconcilie leurs instances. Appelée à chaque
+    affichage du dashboard pour que l'expiration apparaisse sans attendre
+    une nouvelle location sur le même worker.
+    """
+    wc = get_worker_client()
+    for worker in Worker.query.all():
+        try:
+            reconcile_worker_instances(worker, wc)
+        except Exception:
+            # un worker injoignable pendant la réconciliation ne doit pas
+            # faire planter l'affichage du dashboard
+            continue
 
 
 @bp.route("/rent", methods=["POST"])
@@ -123,11 +144,13 @@ def rent():
     db.session.add(rental)
     db.session.commit()
 
+    expires_at_local = expires_at.astimezone(LOCAL_TZ)
+
     return render_template(
         "rental_created.html",
         ssh_command=f"ssh {data['ssh_user']}@{data['host']} -p {data['ssh_port']}",
         password=data["ssh_password"],
-        expires_at=data["expires_at"],
+        expires_at=expires_at_local.strftime("%Y-%m-%d %H:%M:%S"),
     )
 
 

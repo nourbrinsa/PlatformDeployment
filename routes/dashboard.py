@@ -2,6 +2,7 @@ from flask import Blueprint, render_template
 from flask_login import login_required, current_user
 from models.rental import Rental
 from models.distribution import Distribution
+from routes.rental import reconcile_all_workers
 
 bp = Blueprint("dashboard", __name__)
 
@@ -9,6 +10,8 @@ bp = Blueprint("dashboard", __name__)
 @bp.route("/dashboard")
 @login_required
 def index():
+    reconcile_all_workers()
+
     rentals = (
         Rental.query
         .filter_by(user_id=current_user.id)

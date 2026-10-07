@@ -46,7 +46,7 @@
         <td>{{ rental.instance.distribution.name }}</td>
         <td>{{ rental.instance.ssh_port }}</td>
         <td><code>ssh student@{{ rental.instance.worker.ip }} -p {{ rental.instance.ssh_port }}</code></td>
-        <td>{{ rental.end_time.strftime('%d/%m/%Y %H:%M') }}</td>
+        <td>{{ rental.end_time | local_dt }}</td>
         <td>
           <span class="badge badge-{{ rental.status }}">{{ rental.status }}</span>
         </td>
