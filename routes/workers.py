@@ -44,10 +44,10 @@ def register_worker():
     if worker is None:
         worker = Worker(hostname=body["hostname"])
         db.session.add(worker)
+        worker.status = "AVAILABLE"   # nouveau Worker : forcément libre
     worker.ip             = body["ip"]
     worker.cpu            = body.get("cpu")
     worker.memory         = body.get("memory")
-    worker.status         = "AVAILABLE"
     worker.last_heartbeat = datetime.now(timezone.utc)
     db.session.commit()
     return jsonify({"status": "registered", "worker_id": worker.id}), 201
@@ -62,7 +62,7 @@ def heartbeat():
     if worker is None:
         return jsonify({"status": "error", "message": "unknown worker"}), 404
     worker.last_heartbeat = datetime.now(timezone.utc)
-    worker.status         = "AVAILABLE"
+    # le statut n'est plus touché ici : seul le Resource Manager décide AVAILABLE/BUSY
     db.session.commit()
     return jsonify({"status": "ok"}), 200
 
