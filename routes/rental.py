@@ -5,7 +5,7 @@ from models import db
 from models.instance import Instance
 from models.rental import Rental
 from models.distribution import Distribution
-from services.resource_manager import pick_available_worker
+from services.resource_manager import pick_available_worker, mark_worker_busy, mark_worker_available
 
 bp = Blueprint("rental", __name__)
 
@@ -41,13 +41,17 @@ def rent():
         flash("Aucun Worker disponible pour le moment.")
         return redirect(url_for("dashboard.index"))
 
+    mark_worker_busy(worker)   # réservé avant l'appel réseau pour éviter une double affectation
+
     try:
         data, status_code = wc.create_instance(worker.ip, current_user.id, distribution_name, duration_minutes)
     except wc.WorkerAgentError:
+        mark_worker_available(worker)
         flash("Le serveur ne répond pas. Réessayez.")
         return redirect(url_for("dashboard.index"))
 
     if data.get("status") == "error":
+        mark_worker_available(worker)
         flash(f"Erreur Worker : {data.get('message')}")
         return redirect(url_for("dashboard.index"))
 
@@ -83,6 +87,7 @@ def stop_instance(instance_id):
     if data.get("status") == "deleted":
         instance.status = "stopped"
         rental.status   = "stopped"
+        mark_worker_available(instance.worker)
         db.session.commit()
         flash("Instance arrêtée.")
     return redirect(url_for("dashboard.index"))
